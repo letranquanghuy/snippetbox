@@ -22,16 +22,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// of the files slice as variadic arguments.
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		app.logger.Error("error parsing template files", "err", err.Error(), "method", r.Method, "url", r.URL.Path)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(w, r, err) // User the serverError helper
 		return
 	}
 	// Use the ExecuteTemplate() method to write the content of the "base"
 	// template as the response body.
 	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
-		app.logger.Error("error executing template", "err", err.Error(), "method", r.Method, "url", r.URL.Path)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(w, r, err) // User the serverError helper
 	}
 }
 
