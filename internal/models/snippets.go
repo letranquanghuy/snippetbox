@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -53,12 +54,100 @@ func (m *SnippetModel) Insert(title, content string, expires int) (int, error) {
 	return int(id), nil
 }
 
+// // This will return a specific snippet based on its ID.
+// func (m *SnippetModel) Get(id int) (Snippet, error) {
+// 	// Write the SQL statement we want to execute. Again, I've split it over two
+// 	// lines for readability.
+// 	stmt := `SELECT id, title, content, created, expires FROM snippets
+// 	WHERE expires > UTC_TIMESTAMP() AND id = ?`
+
+// 	// Use the QueryRow() method on the connection pool to execute our
+// 	// SQL statement, passing in the untrusted id variable as the value for the
+// 	// placeholder parameter. This returns a pointer to a sql.Row object which
+// 	// holds the result from the database.
+// 	row := m.DB.QueryRow(stmt, id)
+
+// 	// Initialize a new zeroed Snippet struct.
+// 	var s Snippet
+
+// 	// Use row.Scan() to copy the values from each field in sql.Row to the
+// 	// corresponding field in the Snippet struct. Notice that the arguments
+// 	// to row.Scan are *pointers* to the place you want to copy the data into,
+// 	// and the number of arguments must be exactly the same as the number of
+// 	// columns returned by your statement.
+//  // Convert sql.ErrNoRows to ErrNoRecord so upper layers depend on model/domain errors, not database-specific errors.
+// 	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+// 	if err != nil {
+// 		if err == sql.ErrNoRows {
+// 			return Snippet{}, ErrNoRecord
+// 		} else {
+// 			return Snippet{}, err
+// 		}
+// 	}
+
+//		return s, nil
+//	}
+//
 // This will return a specific snippet based on its ID.
 func (m *SnippetModel) Get(id int) (Snippet, error) {
-	return Snippet{}, nil
+	var s Snippet
+
+	stmt := `SELECT id, title, content, created, expires FROM snippets
+	WHERE expires > UTC_TIMESTAMP() AND id = ?`
+	err := m.DB.QueryRow(stmt, id).Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return Snippet{}, ErrNoRecord
+		} else {
+			return Snippet{}, err
+		}
+	}
+
+	return s, nil
 }
 
 // This will return the 10 most recently created snippets that haven't expired.
-func (m *SnippetModel) Latest() ([]*Snippet, error) {
-	return nil, nil
+func (m *SnippetModel) Latest() ([]Snippet, error) {
+	stmt := `SELECT id, title, content, created, expires FROM snippets
+	WHERE expires > UTC_TIMESTAMP() ORDER BY created DESC LIMIT 10`
+
+	// Use the Query() method on the connection pool to execute our
+	// SQL statement. This returns a sql.Rows resultset containing the result of
+	// our query.
+	rows, err := m.DB.Query(stmt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// We defer rows.Close() to ensure the sql.Rows resultset is
+	// always properly closed before the Latest() method returns. This defer
+	// statement should come *after* you check for an error from the Query()
+	// method. Otherwise, if Query() returns an error, you'll get a panic
+	// trying to close a nil resultset.
+	// Important: Closing a resultset with defer rows.Close() is critical in the code above.
+	// As long as a resultset is open it will keep the underlying database connection open…
+	// so if something goes wrong in this method and the resultset isn’t closed, it can rapidly
+	// lead to all the connections in your pool being used up.
+	defer rows.Close()
+
+	var snippets []Snippet
+
+	for rows.Next() {
+		var s Snippet
+		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+		if err != nil {
+			return nil, err
+		}
+		snippets = append(snippets, s)
+	}
+	// When the rows.Next() loop has finished we call rows.Err() to retrieve any
+	// error that was encountered during the iteration. It's important to
+	// call this - don't assume that a successful iteration was completed
+	// over the whole resultset.
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return snippets, nil
 }

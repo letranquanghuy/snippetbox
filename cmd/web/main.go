@@ -21,8 +21,9 @@ type application struct {
 // Running the HTTP server.
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	// Define a new command-line flag for the MySQL DSN string.
-	dsn := flag.String("dsn", "web:1@/snippetbox?parseTime=true", "MySQL data source name")
+	// Define a new command-line flag for the MySQL Data Source Name string.
+	// Format: username:password@tcp(host:port)/database?params
+	dsn := flag.String("dsn", "web:1@tcp(localhost:3306)/snippetbox?parseTime=true", "MySQL data source name")
 	flag.Parse()
 
 	// logger := slog.New(slog.NewJSONHandler(os.Stdout,
@@ -43,7 +44,7 @@ func main() {
 	defer db.Close()
 
 	app := &application{
-		logger: logger,
+		logger:   logger,
 		snippets: &models.SnippetModel{DB: db},
 	}
 
