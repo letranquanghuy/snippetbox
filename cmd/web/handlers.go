@@ -10,11 +10,11 @@ import (
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
+	panic("oops! something went wrong") 
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
 	}
-	w.Header().Add("Server", "Go")
 
 	snippets, err := app.snippets.Latest()
 	if err != nil {

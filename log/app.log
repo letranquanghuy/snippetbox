@@ -27,3 +27,15 @@ time=2026-04-26T19:51:56.023+07:00 level=DEBUG source=/home/eru1hc/letgo/snippet
 time=2026-04-26T19:52:07.746+07:00 level=DEBUG source=/home/eru1hc/letgo/snippetbox/cmd/web/main.go:82 msg="starting server" addr=:4000
 time=2026-04-26T20:11:11.169+07:00 level=DEBUG source=/home/eru1hc/letgo/snippetbox/cmd/web/main.go:82 msg="starting server" addr=:4000
 time=2026-04-26T20:13:33.905+07:00 level=DEBUG source=/home/eru1hc/letgo/snippetbox/cmd/web/main.go:82 msg="starting server" addr=:4000
+time=2026-05-02T08:03:00.942+07:00 level=DEBUG source=/home/eru1hc/letgo/snippetbox/cmd/web/main.go:82 msg="starting server" addr=:4000
+time=2026-05-02T08:12:24.078+07:00 level=DEBUG source=/home/eru1hc/letgo/snippetbox/cmd/web/main.go:82 msg="starting server" addr=:4000
+time=2026-05-02T08:12:27.137+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:46672 proto=HTTP/1.1 method=HEAD uri=/
+time=2026-05-02T08:42:46.734+07:00 level=DEBUG source=/home/eru1hc/letgo/snippetbox/cmd/web/main.go:82 msg="starting server" addr=:4000
+time=2026-05-02T08:43:05.843+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:50918 proto=HTTP/1.1 method=GET uri=/
+time=2026-05-02T08:43:06.927+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:51568 proto=HTTP/1.1 method=GET uri=/
+time=2026-05-02T08:43:07.243+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:61318 proto=HTTP/1.1 method=GET uri=/
+time=2026-05-02T08:43:22.750+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:53320 proto=HTTP/1.1 method=GET uri=/snippet/view/1
+time=2026-05-02T08:43:40.685+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:53320 proto=HTTP/1.1 method=GET uri=/snippet/view
+time=2026-05-02T08:43:40.992+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:52701 proto=HTTP/1.1 method=GET uri=/snippet/view
+time=2026-05-02T08:43:42.129+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:64615 proto=HTTP/1.1 method=GET uri=/snippet/view
+time=2026-05-02T08:43:42.445+07:00 level=INFO source=/home/eru1hc/letgo/snippetbox/cmd/web/middleware.go:32 msg="received request" ip=127.0.0.1:57011 proto=HTTP/1.1 method=GET uri=/snippet/view
