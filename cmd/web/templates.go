@@ -16,12 +16,13 @@ type templateData struct {
 	CurrentYear int
 	Snippet     models.Snippet
 	Snippets    []models.Snippet
+	Form        any
 }
 
 // Create a humanDate fucntion which returns a nicely formatted string representation of a time.
 // Time object.
-// The format string "02 Jan 2006 at 15:04" is a specific layout that Go uses to format time values. 
-// It can not be changed to any other value, 
+// The format string "02 Jan 2006 at 15:04" is a specific layout that Go uses to format time values.
+// It can not be changed to any other value,
 // as it is used as a reference point for Go to understand how to format the time.
 func humanDate(t time.Time) string {
 	return t.Format("02 Jan 2006 at 15:04")
