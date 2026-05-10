@@ -49,3 +49,9 @@ Or if you’ve removed all references to the package in your code, you can run g
 ```
 $ go mod tidy
 ```
+
+
+cd $HOME/code/snippetbox
+mkdir tls
+cd tls
+go run /usr/local/go/src/crypto/tls/generate_cert.go --rsa-bits=2048 --host=localhost

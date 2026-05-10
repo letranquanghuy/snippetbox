@@ -2,11 +2,13 @@ package main
 
 import (
 	"bytes"
+	"errors" // New import
+	"fmt"
 	"net/http"
 	"runtime/debug"
 	"time"
 
-	"fmt"
+	"github.com/go-playground/form/v4" // New import
 )
 
 // The serverError helper writes a log entry at Error level (including the request
@@ -82,6 +84,11 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, status in
 		app.serverError(w, r, err)
 		return
 	}
+
+	// Deliberate error: set a Content-Length header with an invalid (non-integer)
+	// value.
+	w.Header().Set("Content-Length", "this isn't an integer!")
+
 	// If the template is written to the buffer without any errors, we are safe
 	// to go ahead and write the HTTP status code to http.ResponseWriter.
 	w.WriteHeader(status)
@@ -96,6 +103,41 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, status in
 // parameter here at the moment, but we will do later in the book.
 func (app *application) newTemplateData(r *http.Request) templateData {
 	return templateData{
-		CurrentYear: time.Now().Year(),
+		CurrentYear:     time.Now().Year(),
+		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
+		IsAuthenticated: app.isAuthenticated(r),
 	}
+}
+
+// Create a new decodePostForm() helper method. The second parameter here, dst,
+// is the target destination that we want to decode the form data into.
+func (app *application) decodePostForm(r *http.Request, dst any) error {
+	// Call ParseForm() on the request, in the same way that we did in our
+	// snippetCreatePost handler.
+	err := r.ParseForm()
+	if err != nil {
+		return err
+	}
+	// Call Decode() on our decoder instance, passing the target destination as
+	// the first parameter.
+	err = app.formDecoder.Decode(dst, r.PostForm)
+	if err != nil {
+		// If we try to use an invalid target destination, the Decode() method
+		// will return an error with the type *form.InvalidDecoderError.We use
+		// errors.As() to check for this and raise a panic rather than returning
+		// the error.
+		var invalidDecoderError *form.InvalidDecoderError
+		if errors.As(err, &invalidDecoderError) {
+			panic(err)
+		}
+		// For all other errors, we return them as normal.
+		return err
+	}
+	return nil
+}
+
+// Return true if the current request is from an authenticated user, otherwise
+// return false.
+func (app *application) isAuthenticated(r *http.Request) bool {
+	return app.sessionManager.Exists(r.Context(), "authenticatedUserID")
 }
